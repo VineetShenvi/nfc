@@ -34,7 +34,7 @@ qa = RetrievalQA.from_chain_type(
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/api/chat', methods=['POST'])
+@app.route('/api/chat', methods=['POST', 'GET'])
 def chat():
     data = request.json
     query = data.get('query', '')
