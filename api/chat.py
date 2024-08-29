@@ -6,9 +6,11 @@ from langchain.prompts import PromptTemplate
 from langchain.embeddings import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from dotenv import load_dotenv
+from flask_cors import CORS
 from prompt import *
 
 load_dotenv()
+
 
 
 # Setup Langchain with OpenAI and FAISS
@@ -30,6 +32,7 @@ qa = RetrievalQA.from_chain_type(
 )
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/api/chat', methods=['POST'])
 def chat():
