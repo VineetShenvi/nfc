@@ -45,9 +45,9 @@ def chat():
     result = qa({"query": query})
     return jsonify({"result": result["result"]})
 
-@app.route('/api', methods=['GET'])
-def hi():
-    return jsonify({"result": "hi"})
+# @app.route('/api/', methods=['GET'])
+# def hi():
+#     return jsonify({"result": "hi"})
 
 # Vercel serverless function handler
 def handler(request):
