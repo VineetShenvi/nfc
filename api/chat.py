@@ -45,7 +45,7 @@ def chat():
     result = qa({"query": query})
     return jsonify({"result": result["result"]})
 
-@app.route('/', methods=['GET'])
+@app.route('/api', methods=['GET'])
 def hi():
     return jsonify({"result": "hi"})
 
