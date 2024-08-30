@@ -11,6 +11,8 @@ from dotenv import load_dotenv
 from flask_cors import CORS
 import openai
 from prompt import *
+import PIL
+import google.generativeai as genai
 
 load_dotenv()
 
@@ -22,6 +24,7 @@ chain_type_kwargs = {"prompt": PROMPT}
 
 llm = langchain_openai.OpenAI(openai_api_key=os.environ["OPENAI_API_KEY"], temperature=0.9, max_tokens=2000, model="gpt-3.5-turbo-instruct")
 client = openai.OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+genai.configure(api_key=os.environ["GEMINI_KEY"])
 
 new_vector_store = FAISS.load_local(
     "faiss_index", embeddings=OpenAIEmbeddings(), allow_dangerous_deserialization=True
@@ -71,7 +74,19 @@ def transcribe():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
+@app.route('/api/disease', methods=['POST'])
+def disease():
+    try:
+        image_file = request.files['image']
+        image_file.save("temp_image.jpg")
+        img = PIL.Image.open('temp_image.jpg')
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        result = model.generate_content([img,"Give a short description of the plant disease shown in the image"],stream=True)
+        result.resolve()
+        os.remove("temp_image.jpg")
+        return jsonify({'result': result.text})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
     
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))
